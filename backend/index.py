@@ -1,11 +1,31 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
+import time
+import psycopg2
+from psycopg2 import OperationalError
 from flask_cors import CORS
 from datetime import datetime
 
+def wait_for_postgres():
+    while True:
+        try:
+            conn = psycopg2.connect(
+                dbname="postgres",
+                user="postgres",
+                password="example",
+                host="db",
+                port="5432"
+            )
+            conn.close()
+            break
+        except OperationalError:
+            print("Postgres not ready, waiting 1 second...")
+            time.sleep(1)
+
 app = Flask(__name__)
 CORS(app)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://prelok:heslo@localhost/sensor_db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:example@db:5432/postgres'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
 # ORM model dat, vytvorena test databaza cez tento objekt
@@ -17,7 +37,12 @@ class SensorData(db.Model):
     index = db.Column(db.Integer, nullable=False)
     timestamp = db.Column(db.DateTime, default=datetime.now)
 
-@app.route('/postData', methods=['POST'])
+wait_for_postgres()
+
+with app.app_context():
+    db.create_all()
+
+@app.route('/data', methods=['POST'])
 def receive_data():
     data = request.get_json()
     new_entry = SensorData(
@@ -30,7 +55,7 @@ def receive_data():
     db.session.commit()
     return jsonify({"message": "Data saved"}), 201
 
-@app.route('/getData', methods=['GET'])
+@app.route('/data', methods=['GET'])
 def get_data():
     start_date_str = request.args.get('startDate')
     end_date_str = request.args.get('endDate')
@@ -63,4 +88,7 @@ def get_data():
     ])
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0')
+
+
+
