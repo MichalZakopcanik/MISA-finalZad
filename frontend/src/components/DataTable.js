@@ -60,7 +60,7 @@ function DataTable({ data }) {
     { field: 'CO2', headerName: 'CO₂ (ppm)', flex: 1, type: 'number' },
     { field: 'temperature', headerName: 'Teplota (°C)', flex: 1, type: 'number' },
     { field: 'humidity', headerName: 'Vlhkosť (%)', flex: 1, type: 'number' },
-    { field: 'index', headerName: 'Index', flex: 1, type: 'number' },
+    { field: 'index', headerName: 'AQI (air quality index)', flex: 1, type: 'number' },
   ];
 
   return (
