@@ -2,9 +2,7 @@ import React from 'react';
 import {
   Grid,
   Button,
-  TextField,
   Typography,
-  Stack,
 } from '@mui/material';
 import {
   LocalizationProvider,
@@ -14,10 +12,15 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
 function DateFilter({ startDate, endDate, setStartDate, setEndDate, onFetch }) {
   const clearFilters = () => {
-    setStartDate(null);
-    setEndDate(null);
-    onFetch(); // voliteľné: môžeš vyvolať re-fetch hneď po vymazaní
-  };
+  setStartDate(null);
+  setEndDate(null);
+
+  setTimeout(() => {
+    onFetch(null, null);
+  }, 0);
+};
+
+  const isDateRangeEmpty = !startDate && !endDate;
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -29,13 +32,13 @@ function DateFilter({ startDate, endDate, setStartDate, setEndDate, onFetch }) {
             onChange={(newValue) => setStartDate(newValue)}
             ampm={false}
             slotProps={{
-                textField: {
+              textField: {
                 fullWidth: true,
                 size: 'small',
                 sx: { height: 40 },
-                },
+              },
             }}
-            />
+          />
         </Grid>
 
         <Grid item xs={12} md={3}>
@@ -45,13 +48,13 @@ function DateFilter({ startDate, endDate, setStartDate, setEndDate, onFetch }) {
             onChange={(newValue) => setEndDate(newValue)}
             ampm={false}
             slotProps={{
-                textField: {
+              textField: {
                 fullWidth: true,
                 size: 'small',
                 sx: { height: 40 },
-                },
+              },
             }}
-            />
+          />
         </Grid>
 
         <Grid item xs={12} md={3}>
@@ -59,7 +62,7 @@ function DateFilter({ startDate, endDate, setStartDate, setEndDate, onFetch }) {
             fullWidth
             variant="contained"
             color="primary"
-            onClick={onFetch}
+            onClick={() => onFetch(startDate, endDate)}
             size="medium"
             sx={{ height: '40px' }}
           >
@@ -75,6 +78,7 @@ function DateFilter({ startDate, endDate, setStartDate, setEndDate, onFetch }) {
             onClick={clearFilters}
             size="medium"
             sx={{ height: '40px' }}
+            disabled={isDateRangeEmpty}
           >
             Vymazať dátum
           </Button>

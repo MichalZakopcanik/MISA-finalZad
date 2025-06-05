@@ -11,7 +11,7 @@ function Dashboard() {
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
 
-  const fetchData = async () => {
+  const fetchData = async (start = null, end = null) => {
     try {
       const params = {};
       if (startDate) params.startDate = dayjs(startDate).format('YYYY-MM-DDTHH:mm:ss');
