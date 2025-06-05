@@ -14,28 +14,31 @@ import {
 ChartJS.register(LineElement, CategoryScale, LinearScale, PointElement, Tooltip, Legend);
 
 function SensorChart({ data }) {
-  const labels = data.map(d => dayjs(d.timestamp).format('HH:mm:ss'));
+
+  const sortedData = [...data].sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+
+  const labels = sortedData.map(d => dayjs(d.timestamp).format('HH:mm:ss'));
 
   const chartData = {
     labels,
     datasets: [
       {
         label: 'CO₂ (ppm)',
-        data: data.map(d => d.CO2),
+        data: sortedData.map(d => d.CO2),
         fill: false,
         borderColor: 'rgb(255, 99, 132)',
         tension: 0.2,
       },
       {
         label: 'Teplota (°C)',
-        data: data.map(d => d.temperature),
+        data: sortedData.map(d => d.temperature),
         fill: false,
         borderColor: 'rgb(54, 162, 235)',
         tension: 0.2,
       },
       {
         label: 'Vlhkosť (%)',
-        data: data.map(d => d.humidity),
+        data: sortedData.map(d => d.humidity),
         fill: false,
         borderColor: 'rgb(75, 192, 192)',
         tension: 0.2,
