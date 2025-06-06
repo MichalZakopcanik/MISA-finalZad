@@ -1,2 +1,2 @@
 # MISA-finalZad
-Jednoduché REST API na prijímanie senzorových dát z ESP32 a ich uloženie do PostgreSQL
+Jednoduché REST API na prijímanie senzorových dát z ESP32, ich uloženie do PostgreSQL a servisovanie React frontendu.
